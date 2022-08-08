@@ -22,6 +22,10 @@ export interface LoadOptions {
    */
   debug?: boolean
   /**
+   * Exclude entry sources from the fingerprint. See entropy_source.ts for a list of options
+   */
+  excludeSources?: readonly string[]
+  /**
    * Set `false` to disable the unpersonalized AJAX request that the agent sends to collect installation statistics.
    * It's always disabled in the version published to the FingerprintJS CDN.
    */
@@ -200,11 +204,16 @@ function monitor() {
 /**
  * Builds an instance of Agent and waits a delay required for a proper operation.
  */
-export async function load({ delayFallback, debug, monitoring = true }: Readonly<LoadOptions> = {}): Promise<Agent> {
+export async function load({
+  delayFallback,
+  debug,
+  excludeSources,
+  monitoring = true,
+}: Readonly<LoadOptions> = {}): Promise<Agent> {
   if (monitoring) {
     monitor()
   }
   await prepareForSources(delayFallback)
-  const getComponents = loadBuiltinSources({ debug })
+  const getComponents = loadBuiltinSources({ debug, excludeSources })
   return makeAgent(getComponents, debug)
 }

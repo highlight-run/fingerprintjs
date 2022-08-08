@@ -95,6 +95,7 @@ export type BuiltinComponents = SourcesToComponents<typeof sources>
 
 export interface BuiltinSourceOptions {
   debug?: boolean
+  excludeSources?: readonly string[]
 }
 
 /**
@@ -102,5 +103,7 @@ export interface BuiltinSourceOptions {
  * Returns a function that collects the entropy components to make the visitor identifier.
  */
 export default function loadBuiltinSources(options: BuiltinSourceOptions): () => Promise<BuiltinComponents> {
-  return loadSources(sources, options, [])
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return loadSources(sources, options, options.excludeSources || [])
 }
